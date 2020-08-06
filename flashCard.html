@@ -90,6 +90,17 @@ textarea{
 	border: 2px solid red;
 }
 
+/* Vue Transition */
+.flip-enter-active {
+    transition: all 0.4 ease;
+}
+
+.flip-enter {
+    transform: rotateY(180deg);
+    opacity: 0;
+}
+
+
 </style>
 </head>
 <body draggable='false'>
@@ -121,15 +132,20 @@ textarea{
 <br>
 
 <div id='cardWrapV'>
+    <transition-group name='flip'>
   <div
-  class='card'
-  v-on:click='cardFlip(sdf)' 
+  class='card animate__animated animate__faster'
+  v-on:click.self='cardFlip(sdf, $event)' 
   v-for='(sdf, ind) in loopList'
-  v-bind:style='{backgroundColor:sdf.backCol}'>
+  v-bind:style='{backgroundColor:sdf.backCol}'
+  key='sdf'>
+    
       <div class='delete' v-on:click='deleteC(ind)'>x</div>
       <p v-text='sdf.cardFront' v-show='!sdf.showBack'></p>
       <p v-text='sdf.cardBack' v-show='sdf.showBack'></p>
+    
   </div>
+</transition-group>
 </div>
 
 <script>
@@ -188,8 +204,13 @@ const cardWrapV = new Vue({
         confirmed: false
     },
     methods: {
-    	cardFlip: function(x){
-        	x.showBack = !x.showBack;
+    	cardFlip(x, e){
+            e.stopPropagation();
+            x.showBack = !x.showBack;
+            e.target.classList.add('animate__flip');
+            e.target.addEventListener('animationend', () => {
+                e.target.classList.remove('animate__flip');
+            });
         },
         deleteC: function(y){
           cardList.splice(y, 1);   
