@@ -1,4 +1,4 @@
-# **Initravel Website**
+# **Flash Cards**
 > Flash Card application.
 
 ## Table of Contents
